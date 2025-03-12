@@ -9,7 +9,7 @@ import { Footer } from './components/Footer';
 import { ErrorMassage } from './components/ErrorMassage';
 import { Todo } from './types/Todo';
 
-function filterTodo(todoArr: Todo[], filterData: string): Todo[] {
+function filterTodos(todoArr: Todo[], filterData: string): Todo[] {
   if (filterData === 'Active') {
     return todoArr.filter(todo => !todo.completed);
   } else if (filterData === 'Completed') {
@@ -29,7 +29,6 @@ export const App: React.FC = () => {
   const [errorMassage, setErrorMassage] = useState('');
   const [allTodos, setAllTodos] = useState<Todo[]>();
   const [filterData, setFilterData] = useState('All');
-  const [todos, setTodos] = useState<Todo[]>();
   const [todosCounter, setTodosCounter] = useState(0);
 
   useEffect(() => {
@@ -56,11 +55,7 @@ export const App: React.FC = () => {
     setFilterData(data);
   };
 
-  useEffect(() => {
-    if (allTodos) {
-      setTodos(filterTodo(allTodos, filterData));
-    }
-  }, [filterData, allTodos]);
+  const filteredTodos = allTodos ? filterTodos(allTodos, filterData) : [];
 
   useEffect(() => {
     if (allTodos) {
@@ -78,7 +73,9 @@ export const App: React.FC = () => {
 
       <div className="todoapp__content">
         <Header />
-        {todos && todos.length !== 0 && <TodoList todos={todos} />}
+        {filteredTodos && filteredTodos.length !== 0 && (
+          <TodoList todos={filteredTodos} />
+        )}
         {allTodos && allTodos.length !== 0 && (
           <Footer filterData={handleFilterData} todosCounter={todosCounter} />
         )}
